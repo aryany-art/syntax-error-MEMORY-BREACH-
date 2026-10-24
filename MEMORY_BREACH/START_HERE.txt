@@ -1,0 +1,9 @@
+MEMORY//BREACH - GODOT PROJECT
+Extract the entire ZIP. Open Godot 4.3+, import project.godot, and press F5.
+Open Play_Sector_10.tscn and press F6 to test KAVYA.
+Background music starts after ENTER SECTOR.
+Music and effect volumes are editable in settings/Gameplay.tres.
+The new music and sound effects are original synthesized WAV assets.
+Python 3 is needed for actual Python commands; numeric hacking answers work without it.
+Validation: Godot import, 19 audio checks, 155 dialogue checks, and 18 final-shard/walking checks passed.
+Graphical playtesting and listening on your device remain.
