@@ -1,0 +1,314 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/death_effect.gd" id="death_script"]
+[ext_resource type="Shader" path="res://assets/death_vignette.gdshader" id="death_shader"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="ui_script"]
+
+[sub_resource type="ShaderMaterial" id="DeathMaterial"]
+shader = ExtResource("death_shader")
+[sub_resource type="StyleBoxFlat" id="StoryStyle"]
+bg_color = Color(0.025,0.055,0.09,0.94)
+border_width_left = 3
+border_color = Color(0.36,0.88,0.9,1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wd3ci"]
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+bg_color = Color(0.054902, 0.0941176, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.133333, 0.207843, 0.301961, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw6x2"]
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+bg_color = Color(0.054902, 0.0941176, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.788235, 0.968627, 0.419608, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m3fdp"]
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+bg_color = Color(0.054902, 0.0941176, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.360784, 0.882353, 0.901961, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="GameUI" type="CanvasLayer"]
+script = ExtResource("ui_script")
+
+[node name="TouchControls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="Up" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 520.0
+offset_right = 153.0
+offset_bottom = 582.0
+focus_mode = 0
+text = "UP"
+metadata/action = "up"
+
+[node name="Left" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 590.0
+offset_right = 83.0
+offset_bottom = 652.0
+focus_mode = 0
+text = "LEFT"
+metadata/action = "left"
+
+[node name="Down" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 590.0
+offset_right = 153.0
+offset_bottom = 652.0
+focus_mode = 0
+text = "DOWN"
+metadata/action = "down"
+
+[node name="Right" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 155.0
+offset_top = 590.0
+offset_right = 223.0
+offset_bottom = 652.0
+focus_mode = 0
+text = "RIGHT"
+metadata/action = "right"
+
+[node name="Fire" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 865.0
+offset_top = 600.0
+offset_right = 933.0
+offset_bottom = 662.0
+focus_mode = 0
+text = "FIRE"
+metadata/action = "fire"
+
+[node name="Shield" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 775.0
+offset_top = 600.0
+offset_right = 843.0
+offset_bottom = 662.0
+focus_mode = 0
+text = "AEGIS"
+metadata/action = "shield"
+
+[node name="Hack" type="Button" parent="TouchControls"]
+layout_mode = 0
+offset_left = 865.0
+offset_top = 510.0
+offset_right = 933.0
+offset_bottom = 572.0
+focus_mode = 0
+text = "HACK"
+metadata/action = "hack"
+
+[node name="HUD" type="PanelContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 952.0
+offset_bottom = 92.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wd3ci")
+
+[node name="HUDContent" type="VBoxContainer" parent="HUD"]
+layout_mode = 2
+
+[node name="Status" type="Label" parent="HUD/HUDContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.360784, 0.882353, 0.901961, 1)
+theme_override_font_sizes/font_size = 17
+text = "SEC 01  /  HULL 100%  /  AEGIS 100%"
+
+[node name="Objective" type="Label" parent="HUD/HUDContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.968627, 0.72549, 0.333333, 1)
+theme_override_font_sizes/font_size = 13
+text = "WEAPON / SHARDS / KEYS / LASER STATE"
+
+[node name="Toast" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 36.0
+offset_top = 105.0
+offset_right = 36.0
+offset_bottom = 105.0
+theme_override_colors/font_color = Color(0.788235, 0.968627, 0.419608, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="ControlHints" type="Label" parent="."]
+offset_left = 12.0
+offset_top = 704.0
+offset_right = 12.0
+offset_bottom = 704.0
+theme_override_colors/font_color = Color(0.517647, 0.603922, 0.698039, 1)
+theme_override_font_sizes/font_size = 12
+text = "WASD / ARROWS: MOVE     CLICK / SPACE: FIRE     SHIFT / RMB: AEGIS     E: HACK     Q: SHIELD TOGGLE     R: RETRY"
+
+[node name="StoryPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 110.0
+offset_top = 584.0
+offset_right = 850.0
+offset_bottom = 687.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StoryStyle")
+[node name="StoryContent" type="VBoxContainer" parent="StoryPanel"]
+mouse_filter = 2
+[node name="Speaker" type="Label" parent="StoryPanel/StoryContent"]
+text = "AETHER // MEMORY CHANNEL"
+theme_override_colors/font_color = Color(0.36,0.88,0.9,1)
+theme_override_font_sizes/font_size = 13
+mouse_filter = 2
+[node name="StoryText" type="Label" parent="StoryPanel/StoryContent"]
+unique_name_in_owner = true
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 16
+mouse_filter = 2
+
+[node name="Console" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 150.0
+offset_top = 480.0
+offset_right = 810.0
+offset_bottom = 690.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kw6x2")
+
+[node name="ConsoleContent" type="VBoxContainer" parent="Console"]
+layout_mode = 2
+
+[node name="ConsoleHeading" type="Label" parent="Console/ConsoleContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788235, 0.968627, 0.419608, 1)
+theme_override_font_sizes/font_size = 20
+text = "AETHER // COMMAND CONSOLE"
+
+[node name="ConsoleLog" type="Label" parent="Console/ConsoleContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.360784, 0.882353, 0.901961, 1)
+theme_override_font_sizes/font_size = 13
+text = "Read amber terminals to discover executable commands."
+autowrap_mode = 3
+
+[node name="CommandChips" type="HFlowContainer" parent="Console/ConsoleContent"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CommandRow" type="HBoxContainer" parent="Console/ConsoleContent"]
+layout_mode = 2
+
+[node name="CommandInput" type="LineEdit" parent="Console/ConsoleContent/CommandRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "access = true"
+
+[node name="RunButton" type="Button" parent="Console/ConsoleContent/CommandRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "RUN"
+
+[node name="CloseConsole" type="Button" parent="Console/ConsoleContent/CommandRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CLOSE [ESC]"
+
+[node name="DeathOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("DeathMaterial")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("death_script")
+
+[node name="Modal" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+offset_left = 190.0
+offset_top = 170.0
+offset_right = 770.0
+offset_bottom = 500.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m3fdp")
+
+[node name="ModalContent" type="VBoxContainer" parent="Modal"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="GameTitle" type="Label" parent="Modal/ModalContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.360784, 0.882353, 0.901961, 1)
+theme_override_font_sizes/font_size = 25
+text = "MEMORY//BREACH"
+
+[node name="ModalTitle" type="Label" parent="Modal/ModalContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 21
+text = "SECTOR BRIEFING"
+autowrap_mode = 3
+
+[node name="ModalBody" type="Label" parent="Modal/ModalContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(530, 130)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.788235, 0.843137, 0.901961, 1)
+theme_override_font_sizes/font_size = 17
+text = "Editable campaign briefing text. Gameplay supplies the live text."
+autowrap_mode = 3
+
+[node name="ModalAction" type="Button" parent="Modal/ModalContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "ENTER SECTOR"
+
+[node name="ResumeCampaign" type="Button" parent="Modal/ModalContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "CONTINUE SAVED CAMPAIGN"

@@ -1,0 +1,53 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+[ext_resource type="Texture2D" path="res://assets/threats_and_gems.png" id="1"]
+[sub_resource type="AtlasTexture" id="F0"]
+atlas = ExtResource("1")
+region = Rect2(0,0,314,314)
+[sub_resource type="AtlasTexture" id="F1"]
+atlas = ExtResource("1")
+region = Rect2(314,0,313,314)
+[sub_resource type="AtlasTexture" id="F2"]
+atlas = ExtResource("1")
+region = Rect2(627,0,313,314)
+[sub_resource type="AtlasTexture" id="F3"]
+atlas = ExtResource("1")
+region = Rect2(940,0,314,314)
+[sub_resource type="AtlasTexture" id="F4"]
+atlas = ExtResource("1")
+region = Rect2(0,314,314,313)
+[sub_resource type="AtlasTexture" id="F5"]
+atlas = ExtResource("1")
+region = Rect2(314,314,313,313)
+[sub_resource type="AtlasTexture" id="F6"]
+atlas = ExtResource("1")
+region = Rect2(627,314,313,313)
+[sub_resource type="AtlasTexture" id="F7"]
+atlas = ExtResource("1")
+region = Rect2(940,314,314,313)
+[resource]
+animations = [
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F0")}],
+"loop": true, "name": &"sentinel_idle", "speed": 9.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F1")}],
+"loop": true, "name": &"sentinel_charge", "speed": 9.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F2")}],
+"loop": true, "name": &"sentinel_fire", "speed": 9.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F3")}],
+"loop": true, "name": &"sentinel_cool", "speed": 9.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F4")}, {"duration": 1.0, "texture": SubResource("F7")}],
+"loop": true, "name": &"wisp_hover", "speed": 9.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("F5")}, {"duration": 1.0, "texture": SubResource("F6")}, {"duration": 1.0, "texture": SubResource("F7")}, {"duration": 1.0, "texture": SubResource("F4")}],
+"loop": true, "name": &"wisp_pulse", "speed": 9.0
+},
+]

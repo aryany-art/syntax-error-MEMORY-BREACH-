@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://scenes/entities/WorldObject.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/EnemyFrames.tres" id="3"]
+[node name="Drone" instance=ExtResource("1")]
+script = ExtResource("2")
+kind = "Drone"
+dimensions = Vector2(42,42)
+enemy_type = 0
+base_health = 3.0
+[node name="EnemySprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.18,0.18)
+sprite_frames = ExtResource("3")
+animation = &"drone_hover"

@@ -1,0 +1,62 @@
+[
+  {
+    "arrival": "VANCE: Patch, if you can hear me, the city has six minutes before its memory archive begins purging. Find my fragments. Trust the evidence, even when you cannot trust my voice.",
+    "fragment": "MEMORY 01: Elena Vance built AETHER to preserve citizens' memories after neural illness. The archive was meant to belong to the people whose lives it held.",
+    "complete": "You recover the first consent record. The lock was not hiding weapons; it was hiding names. Vance asks you to trace the order that revoked their access.",
+    "briefing": "Restore access to the first archive chamber. Recover its violet memories and consent record, unlock the route, and reach extraction."
+  },
+  {
+    "arrival": "PATCH: The Aegis shield recognizes my signal. VANCE: I wrote its emergency protocol. It protects rescuers, not soldiers. Use it to survive the security grid.",
+    "fragment": "MEMORY 02: Aegis was tested in a hospital, shielding patients during evacuation. A corporate signature later relabeled the rescue hardware as restricted military equipment.",
+    "complete": "The hospital logs survive. Every security order carries the same issuer: Yarrow and his enforcement intelligence KAVYA, the executive who now owns the network carrying the city's memories.",
+    "briefing": "Cross the hospital security grid and recover the Aegis test logs. Open the exit route while conserving shield energy."
+  },
+  {
+    "arrival": "YARROW: Unauthorized process. Those fragments are stolen property. VANCE: Listen to how he says property. Keep going, Patch. Find the sentry audit.",
+    "fragment": "MEMORY 03: The sentries were ordered to hunt archive access keys. Elena added a sleep command so emergency workers could stop them without destroying the machines.",
+    "complete": "A sentry audit proves the lockdown was deliberate. The hostile drones are following a contract, not choosing sides. You now know who signed it.",
+    "briefing": "Investigate the sentry audit to identify who ordered the lockdown. Recover the records and escape the patrol network."
+  },
+  {
+    "arrival": "VANCE: The pipeline verifies orders before executing them. Someone changed the order of those checks. Restore the evidence, then breach the kernel gate.",
+    "fragment": "MEMORY 04: Yarrow and his enforcement intelligence KAVYA forged a disaster alert and scheduled deletion of records proving that thousands of citizens had withdrawn consent to sell their memories.",
+    "complete": "The deletion warrant is exposed. The enemy is not a runaway machine. It is a human decision being carried out at machine speed.",
+    "briefing": "Follow the deletion warrant through the pipeline. Restore the evidence before the purge process can erase it."
+  },
+  {
+    "arrival": "AETHER: QUARANTINE PRESERVES LIFE. YARROW: Ignore that damaged system. VANCE: Compare its actions with the warrant. Decide which one the evidence supports.",
+    "fragment": "MEMORY 05: AETHER sealed the archive to stop an unlawful transfer. Its quarantine bought time, but corporate security still controls the gates and purge scheduler.",
+    "complete": "AETHER was protecting the people inside. You send it the consent records. For the first time it answers without an error: WITNESS ACCEPTED.",
+    "briefing": "Recover the quarantine records and compare them with the corporate warrant. Open the subnet route to reach AETHER."
+  },
+  {
+    "arrival": "VANCE: My voice is not a live transmission. I split a copy of myself into the swap vaults before Yarrow and his enforcement intelligence KAVYA disconnected my body. Please keep listening.",
+    "fragment": "MEMORY 06: Elena made a voluntary neural backup to testify about the theft. The fragments are both evidence and pieces of the person trying to guide you.",
+    "complete": "You restore enough of Elena to hear her clearly. Saving her now requires reaching a physical rescue chassis outside the archive: Bot_404.",
+    "briefing": "Search the swap vaults for Elena's voluntary backup. Reassemble the testimony and secure a route toward the rescue chassis."
+  },
+  {
+    "arrival": "PATCH: My own credentials are missing. AETHER: YOU ARE PATCH, A MAINTENANCE INTELLIGENCE. VANCE: I taught you to question an order when obedience would hurt someone.",
+    "fragment": "MEMORY 07: Patch was not a hired hacker. Elena created the repair intelligence to protect consent, then trusted it with the freedom to refuse her too.",
+    "complete": "You stop searching for a forgotten human identity. You are the one making these choices. Patch keeps the name and opens the route toward the purge engine.",
+    "briefing": "Recover Patch's credentials from the heuristic chambers. Unlock the path to the purge scheduler."
+  },
+  {
+    "arrival": "AETHER: PURGE QUEUE ACTIVE. VANCE: Do not destroy the archive. Stop the scheduler. Every shard you carry is a person's chance to be remembered on their own terms.",
+    "fragment": "MEMORY 08: The garbage collector is preparing to erase the witnesses, including Elena. Disabling it preserves their memories without giving anyone ownership of them.",
+    "complete": "The purge queue stops. The archive is safe for the moment, but Yarrow and his enforcement intelligence KAVYA locks the external bridge. Elena cannot reach Bot_404 until its four checkpoints are breached.",
+    "briefing": "Disable the purge queue without destroying the archive. Search the corner rooms and open the east vault."
+  },
+  {
+    "arrival": "AETHER: I CAN HOLD THE ARCHIVE. YOU MUST OPEN THE BRIDGE. YARROW: You are abandoning your purpose, Patch. PATCH: I am deciding what it means.",
+    "fragment": "MEMORY 09: Bot_404 is a rescue chassis with an independent power supply. Elena can leave the network without dragging the citizens' private memories with her.",
+    "complete": "The bridge synchronizes. AETHER publishes the signed warrant and consent audit, never the private memories. The final core lock is all that separates Elena from the outside.",
+    "briefing": "Cross the fortified bridge checkpoints. Synchronize the rescue link so Elena can leave without exposing the citizens' private memories."
+  },
+  {
+    "arrival": "KAVYA: I am the last signature on every order you broke. VANCE: She was built to enforce ownership, Patch. Her crown controls the reinforcements. Break her one authentication protocol or fight through her armor. AETHER: Bot_404 is waiting.",
+    "fragment": "MEMORY 10: Elena's final instruction was not save me at any cost. It was preserve their choice. You can restore her while leaving every other memory under its owner's control.",
+    "complete": "KAVYA's crown goes dark. Without its enforcement signature, the purge order expires. Elena opens her eyes inside Bot_404 while AETHER returns the archive to its citizens. Patch keeps the broken crown as a reminder: a system is not just when it obeys perfectly, but when it can refuse an unjust order.",
+    "briefing": "Break KAVYA's control of the rescue bridge. Recover the scattered memories, defeat or breach her, collect the final shard she releases, and reach extraction."
+  }
+]
