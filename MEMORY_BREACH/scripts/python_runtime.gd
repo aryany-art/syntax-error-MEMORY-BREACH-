@@ -1,8 +1,6 @@
 extends Node
 signal finished(response)
 signal progress(message)
-var web_callback
-var web_window
 var web_loading=false
 @export var python_executable=""
 var process_id=-1
@@ -53,16 +51,17 @@ func submit(code,a,b):
 	elapsed=0
 	return true
 func submit_web(code,a,b):
-	if web_callback==null:web_callback=JavaScriptBridge.create_callback(web_received)
-	web_window=JavaScriptBridge.get_interface("window")
-	if web_window==null or not bool(JavaScriptBridge.eval("typeof window.memoryBreachPythonRun === 'function'")):
-		finished.emit({"ok":false,"numeric":null,"output":"Browser Python could not initialize. Refresh the page and try again."})
+	if not bool(JavaScriptBridge.eval("typeof window.memoryBreachPythonSubmit === 'function'",true)):
+		finished.emit({"ok":false,"numeric":null,"output":"Python bridge is missing. Open the latest published game link."})
 		return false
 	busy=true
 	web_loading=true
 	elapsed=0.0
-	var accepted=web_window.memoryBreachPythonRun(str(code),a,b,sequence,web_callback)
-	if not accepted:busy=false
+	var request=JSON.stringify({"id":sequence,"code":str(code),"a":a,"b":b})
+	var accepted=JavaScriptBridge.eval("window.memoryBreachPythonSubmit("+request+")",true)
+	if not accepted:
+		busy=false
+		finished.emit({"ok":false,"numeric":null,"output":"Python is already processing a command. Wait and retry."})
 	return bool(accepted)
 
 func web_received(args):
@@ -83,8 +82,13 @@ func _process(delta):
 	if not busy:return
 	elapsed+=delta
 	if OS.has_feature("web"):
+		for _index in range(8):
+			var message=JavaScriptBridge.eval("window.memoryBreachPythonPoll ? window.memoryBreachPythonPoll() : ''",true)
+			if message==null or str(message).is_empty():break
+			web_received([str(message)])
+		if not busy:return
 		if elapsed>(125.0 if web_loading else 10.0):
-			web_window.memoryBreachPythonCancel()
+			JavaScriptBridge.eval("window.memoryBreachPythonCancel && window.memoryBreachPythonCancel()",true)
 			busy=false
 			finished.emit({"ok":false,"numeric":null,"output":"Python timed out. Retry the command; session variables have been cleared."})
 		return
@@ -102,7 +106,6 @@ func _process(delta):
 		for name in ["request.json","response.json"]:DirAccess.remove_absolute(folder+"/"+name)
 		finished.emit({"id":sequence,"ok":false,"numeric":null,"output":"Execution exceeded 5 seconds. Python session stopped; variables reset on next command."})
 func _exit_tree():
-	if OS.has_feature("web") and web_window!=null:
-		web_window.memoryBreachPythonCancel()
-		web_callback=null
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.memoryBreachPythonCancel && window.memoryBreachPythonCancel()",true)
 	if process_id>0 and OS.is_process_running(process_id):OS.kill(process_id)

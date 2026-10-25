@@ -36,3 +36,5 @@ On phones, use the left analog joystick to move. FIRE is at the bottom right,
 SHIELD is beside it, and HACK is above. Separate fingers can move, fire and shield
 at once. Controls account for display cutouts; the hacking input moves above the
 on-screen keyboard. Rotate to landscape; the sector timer waits in portrait.
+
+Browser releases use content-versioned game packs and a polled Python response queue to avoid stale cached builds and cross-runtime callback delivery failures.

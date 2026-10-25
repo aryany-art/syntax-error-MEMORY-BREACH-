@@ -223,7 +223,7 @@ def build(godot, project, output):
             "For actual Python commands, install Python 3 with Add Python to PATH.\n"
             "The terminal runs code with your Windows user permissions; enter trusted code.\n",
             encoding="utf-8")
-        for name in ["python_bridge.js","python_worker.mjs","python-check.html"]:
+        for name in ["python_bridge.js","python_worker.mjs","python-check.html","python-game-check.html"]:
             shutil.copy2(project / "web" / name, web / name)
         shutil.copy2(project / "python_runtime/browser_eval.py", web / "browser_eval.py")
         downloads = public / "downloads"

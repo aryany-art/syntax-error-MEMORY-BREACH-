@@ -92,7 +92,7 @@ async function start(wantFullscreen){
  const engine=new Engine($GODOT_CONFIG);
  try{
   await engine.startGame({
-   canvas:canvas,canvasResizePolicy:2,
+   canvas:canvas,canvasResizePolicy:2,mainPack:"index.pck",
    onProgress:function(current,total){
     if(total>0){progress.max=total;progress.value=current;status.textContent='Loading '+Math.round(current/total*100)+'%';}
    }

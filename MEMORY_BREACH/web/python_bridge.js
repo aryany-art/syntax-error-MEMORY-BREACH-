@@ -1,6 +1,10 @@
 (function(){
 'use strict';
-const workerURL=new URL('python_worker.mjs',document.currentScript.src).href;
+const scriptURL=new URL(document.currentScript.src);
+const workerAddress=new URL('python_worker.mjs',scriptURL);
+workerAddress.search=scriptURL.search;
+const workerURL=workerAddress.href;
+let queue=[];
 let worker=null;
 let active=null;
 let ready=false;
@@ -58,5 +62,10 @@ window.memoryBreachPythonRun=function(code,a,b,id,callback){
         return false;
     }
 };
-window.memoryBreachPythonCancel=reset;
+window.memoryBreachPythonSubmit=function(request){
+ return window.memoryBreachPythonRun(String(request.code),Number(request.a),Number(request.b),Number(request.id),
+  message=>queue.push(message));
+};
+window.memoryBreachPythonPoll=function(){return queue.length?queue.shift():'';};
+window.memoryBreachPythonCancel=function(){reset();queue=[];};
 })();

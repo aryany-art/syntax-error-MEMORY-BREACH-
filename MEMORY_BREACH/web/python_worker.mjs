@@ -9,7 +9,9 @@ async function initialize(){
         loading=(async()=>{
             const module=await import(CDN+'pyodide.mjs');
             interpreter=await module.loadPyodide({indexURL:CDN,stdout:()=>{},stderr:()=>{}});
-            const response=await fetch(new URL('browser_eval.py',import.meta.url));
+            const evaluatorURL=new URL('browser_eval.py',import.meta.url);
+            evaluatorURL.search=new URL(import.meta.url).search;
+            const response=await fetch(evaluatorURL);
             if(!response.ok)throw new Error('Python evaluator could not be downloaded.');
             interpreter.runPython(await response.text());
             evaluate=interpreter.globals.get('_memory_breach_eval');
