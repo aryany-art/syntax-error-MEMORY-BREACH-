@@ -178,6 +178,7 @@ func load_sector(index):
 	overdrive_remaining=0
 	memory_story_shown=false
 	arrival_sent=false
+	ui.clear_touch_buttons()
 	ui.story_time=0.0
 	ui.death.clear_effect()
 	drones.clear()
@@ -640,7 +641,7 @@ func clear_enemy_sight(a,b):
 
 func enemy_patrol_step(enemy,dt,chasing=false):
 	enemy.path_timer-=dt
-	if enemy.nav_revision!=enemy_nav.revision or enemy.path_timer<=0 or enemy.path_index>=enemy.path.size():
+	if enemy.nav_revision!=enemy_nav.revision or enemy.path_timer<=0 or (enemy.path.size()>1 and enemy.path_index>=enemy.path.size()):
 		enemy.path = enemy_nav.target_path(enemy.pos,pos,enemy.bounds) if chasing else enemy_nav.random_path(enemy.pos,enemy.bounds)
 		if enemy.get("boss",false) and chasing and enemy.path.size()<=1:
 			enemy.path=enemy_nav.random_path(enemy.pos,enemy.bounds)
@@ -657,7 +658,7 @@ func enemy_patrol_step(enemy,dt,chasing=false):
 	var delta_pos=(target-enemy.pos).limit_length(speed*dt)
 	var actual=enemy_nav.move(enemy,delta_pos,solids())
 	enemy.vel=actual/maxf(dt,0.001)
-	if actual.length()<0.01:enemy.path_timer=0
+	if actual.length()<0.01:enemy.path_timer=minf(enemy.path_timer,0.2)
 
 func update_stalker(enemy,dt):
 	enemy.attack_cd=maxf(0,enemy.attack_cd-dt)
@@ -832,7 +833,8 @@ func build_ui():
 		if id == "hack" and pressed: toggle_console()
 		else: touch_held[id] = pressed)
 	command_input.gui_input.connect(console_key)
-	touch_mode = DisplayServer.is_touchscreen_available() or OS.has_feature("mobile")
+	touch_mode = ui.get_node("TouchControls").visible
+	ui.touch_controls_enabled.connect(func():touch_mode=true)
 
 func console_key(event):
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE:

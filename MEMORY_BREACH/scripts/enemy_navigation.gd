@@ -5,6 +5,8 @@ var revision=0
 var rng=RandomNumberGenerator.new()
 var allowed={}
 var active_cells=[]
+var bounds_cells={}
+var path_queries=0
 func _init():
 	rng.randomize()
 func cell_at(point):
@@ -17,6 +19,7 @@ func rebuild(game):
 	grid.update()
 	allowed.clear()
 	active_cells.clear()
+	bounds_cells.clear()
 	var mask=game.world.get_node_or_null("EnemyPatrolTiles")
 	if mask:
 		for cell in mask.get_used_cells():allowed[cell]=true
@@ -36,6 +39,9 @@ func rebuild(game):
 			if not blocked:active_cells.append(cell)
 	revision+=1
 func nearest(point,bounds):
+	var direct=cell_at(point)
+	if grid.is_in_boundsv(direct) and not grid.is_point_solid(direct) and bounds.has_point(grid.get_point_position(direct)):
+		return direct
 	var best=Vector2i(-1,-1)
 	var distance=INF
 	for cell in active_cells:
@@ -47,11 +53,15 @@ func nearest(point,bounds):
 			best=cell
 	return best
 func random_path(point,bounds):
+	path_queries+=1
 	var start=nearest(point,bounds)
 	if start.x<0:return PackedVector2Array()
-	var candidates=[]
-	for cell in active_cells:
-		if bounds.has_point(grid.get_point_position(cell)):candidates.append(cell)
+	if not bounds_cells.has(bounds):
+		var cells=[]
+		for cell in active_cells:
+			if bounds.has_point(grid.get_point_position(cell)):cells.append(cell)
+		bounds_cells[bounds]=cells
+	var candidates=bounds_cells[bounds]
 	for attempt in range(18):
 		if candidates.is_empty():break
 		var target=candidates[rng.randi_range(0,candidates.size()-1)]
@@ -64,6 +74,7 @@ func random_path(point,bounds):
 		if valid and path.size()>1:return path
 	return PackedVector2Array()
 func target_path(point,target,bounds):
+	path_queries+=1
 	var start=nearest(point,bounds)
 	var end=nearest(target,bounds)
 	if start.x<0 or end.x<0:return PackedVector2Array()
