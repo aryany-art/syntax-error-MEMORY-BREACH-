@@ -1,0 +1,44 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MEMORY BREACH — Python runtime check</title>
+<style>body{background:#07101c;color:#d4f4ed;font:16px system-ui;max-width:900px;margin:40px auto;padding:20px}button{padding:14px;background:#83f4ce;color:#08251d;border:0;border-radius:8px;font:inherit}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}a{color:#83f4ce}</style>
+<h1>Python runtime check</h1><p>This checks the same browser worker used by the game. Python runs on your device.</p>
+<button id="run">Run Python checks</button> <a href="index.html">Back to game</a><pre id="output" aria-live="polite">Ready.</pre>
+<script src="python_bridge.js"></script><script>
+let next=0;
+const output=document.getElementById('output');
+function run(code){
+ return new Promise(resolve=>{
+  window.memoryBreachPythonRun(code,13,7,++next,text=>{
+   const message=JSON.parse(text);
+   if(message.phase==='result')resolve(message);
+   else output.textContent+='\n'+message.output;
+  });
+ });
+}
+document.getElementById('run').addEventListener('click',async()=>{
+ document.getElementById('run').disabled=true;
+ output.textContent='Loading Python and running checks…';
+ const cases=[
+  ['XOR print','print(a ^ b)',r=>r.ok&&r.numeric===10],
+  ['Standard-library import','import math; math.sqrt(81)',r=>r.ok&&r.numeric===9],
+  ['Assignment and expression','x=40; x+2',r=>r.ok&&r.numeric===42],
+  ['Persistent variables','x+3',r=>r.ok&&r.numeric===43],
+  ['Undefined-name feedback','asfddfs',r=>!r.ok&&r.output.includes('NameError')],
+  ['Exception feedback','1/0',r=>!r.ok&&r.output.includes('ZeroDivisionError')],
+  ['Text output',"print('ready')",r=>r.ok&&r.output.trim()==='ready'&&r.numeric===null],
+  ['No blocking stdin',"input('x')",r=>!r.ok&&r.output.includes('RuntimeError')],
+  ['Execution timeout','while True: pass',r=>!r.ok&&r.output.includes('5 seconds')],
+  ['Recovery after timeout','print(a ^ b)',r=>r.ok&&r.numeric===10]
+ ];
+ let passed=0;
+ for(const [name,code,test] of cases){
+  const response=await run(code);
+  const ok=test(response);
+  if(ok)passed++;
+  output.textContent+='\n'+(ok?'PASS':'FAIL')+': '+name;
+  if(!ok)output.textContent+='\n'+response.output;
+ }
+ output.textContent+='\nRESULT: '+passed+'/'+cases.length+' passed';
+ document.getElementById('run').disabled=false;
+});
+</script></html>

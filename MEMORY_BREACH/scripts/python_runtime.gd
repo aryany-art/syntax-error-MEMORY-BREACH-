@@ -1,5 +1,9 @@
 extends Node
 signal finished(response)
+signal progress(message)
+var web_callback
+var web_window
+var web_loading=false
 @export var python_executable=""
 var process_id=-1
 var folder=""
@@ -9,6 +13,7 @@ var elapsed=0.0
 var prefix=PackedStringArray()
 var executable=""
 func _ready():
+	if OS.has_feature("web"):return
 	folder=OS.get_user_data_dir()+"/python_session_"+str(Time.get_ticks_usec())
 	DirAccess.make_dir_recursive_absolute(folder)
 func start():
@@ -36,6 +41,7 @@ func start():
 func submit(code,a,b):
 	if busy:return false
 	sequence+=1
+	if OS.has_feature("web"):return submit_web(code,a,b)
 	if not start():
 		finished.emit({"id":sequence,"ok":false,"numeric":null,"output":"Python 3 was not found. Install Python 3 or set Python Executable on the game root. No separate terminal window is required."})
 		return false
@@ -46,9 +52,42 @@ func submit(code,a,b):
 	busy=true
 	elapsed=0
 	return true
+func submit_web(code,a,b):
+	if web_callback==null:web_callback=JavaScriptBridge.create_callback(web_received)
+	web_window=JavaScriptBridge.get_interface("window")
+	if web_window==null or not bool(JavaScriptBridge.eval("typeof window.memoryBreachPythonRun === 'function'")):
+		finished.emit({"ok":false,"numeric":null,"output":"Browser Python could not initialize. Refresh the page and try again."})
+		return false
+	busy=true
+	web_loading=true
+	elapsed=0.0
+	var accepted=web_window.memoryBreachPythonRun(str(code),a,b,sequence,web_callback)
+	if not accepted:busy=false
+	return bool(accepted)
+
+func web_received(args):
+	if args.is_empty():return
+	var response=JSON.parse_string(str(args[0]))
+	if not response is Dictionary or int(response.get("id",-1))!=sequence:return
+	if not busy:return
+	if response.get("phase","result")!="result":
+		if response.get("phase","")=="ready":
+			web_loading=false
+			elapsed=0.0
+		progress.emit(str(response.get("output","")))
+		return
+	busy=false
+	finished.emit(response)
+
 func _process(delta):
 	if not busy:return
 	elapsed+=delta
+	if OS.has_feature("web"):
+		if elapsed>(125.0 if web_loading else 10.0):
+			web_window.memoryBreachPythonCancel()
+			busy=false
+			finished.emit({"ok":false,"numeric":null,"output":"Python timed out. Retry the command; session variables have been cleared."})
+		return
 	var path=folder+"/response.json"
 	if FileAccess.file_exists(path):
 		var result=JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -63,4 +102,7 @@ func _process(delta):
 		for name in ["request.json","response.json"]:DirAccess.remove_absolute(folder+"/"+name)
 		finished.emit({"id":sequence,"ok":false,"numeric":null,"output":"Execution exceeded 5 seconds. Python session stopped; variables reset on next command."})
 func _exit_tree():
+	if OS.has_feature("web") and web_window!=null:
+		web_window.memoryBreachPythonCancel()
+		web_callback=null
 	if process_id>0 and OS.is_process_running(process_id):OS.kill(process_id)

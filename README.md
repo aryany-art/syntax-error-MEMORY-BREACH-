@@ -17,8 +17,12 @@ No continuously running PC or tunnel is needed once Pages deployment completes.
 ## Development
 Import MEMORY_BREACH/project.godot into Godot 4.3 or newer.
 All ten sectors, graphics, scripts, music and sound effects are editable.
-Browser builds accept numeric hacking answers. Actual Python commands work in
-the Windows download when the player has Python 3 installed.
+Both browser and Windows builds accept Python commands and numeric hacking answers.
+The browser loads Pyodide in a module worker on first use; no local Python installation
+is needed. The first download needs an internet connection, and combat/timing wait
+while it loads. Windows players need Python 3 for actual Python commands.
+Variables persist during the session. Commands time out after five seconds; a timeout
+clears the interpreter session. input() is unavailable; enter values in the terminal.
 
 The build preserves the original WAV music in the source and converts it to Ogg
 in a temporary build copy. Mobile multi-touch and navigation optimizations are included.

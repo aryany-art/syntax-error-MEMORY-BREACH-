@@ -66,7 +66,7 @@ background:#61ffbd;border-radius:8px;color:#071523;font-weight:750;text-decorati
 <p>Fight the security network. Breach its locks. Recover the memories. Face KAVYA.</p>
 <a href="/play/index.html">Play in browser</a>
 <a class="secondary" href="/downloads/MEMORY_BREACH_Windows.zip">Download for Windows</a>
-<p>Browser: enter numeric hacking answers.<br>
+<p>Browser: Python commands load on first use; numeric answers work immediately.<br>
 Windows: extract the download, then open MEMORY_BREACH.exe.
 Install Python 3 to run Python commands inside the Windows game.</p>
 <small>Each player has a separate campaign. On phones, rotate to landscape.</small></main></html>"""
@@ -223,6 +223,9 @@ def build(godot, project, output):
             "For actual Python commands, install Python 3 with Add Python to PATH.\n"
             "The terminal runs code with your Windows user permissions; enter trusted code.\n",
             encoding="utf-8")
+        for name in ["python_bridge.js","python_worker.mjs","python-check.html"]:
+            shutil.copy2(project / "web" / name, web / name)
+        shutil.copy2(project / "python_runtime/browser_eval.py", web / "browser_eval.py")
         downloads = public / "downloads"
         downloads.mkdir(exist_ok=True)
         with zipfile.ZipFile(downloads / "MEMORY_BREACH_Windows.zip", "w", zipfile.ZIP_DEFLATED) as z:
@@ -245,10 +248,6 @@ def patch_runtime(work):
            '\t\t\tworker_path=OS.get_executable_path().get_base_dir().path_join("python_runtime/worker.py")\n'
            '\t\tcommand.append(worker_path)')
     s = s.replace(old, new)
-    s = s.replace("func submit(code,a,b):", '''func submit(code,a,b):
-\tif OS.has_feature("web"):
-\t\tfinished.emit({"ok":false,"numeric":null,"output":"Browser mode: enter the numeric answer to breach. Actual Python commands are supported in the Windows download."})
-\t\treturn false''')
     runtime.write_text(s, encoding="utf-8")
 
 def prepare_compressed_assets(public):

@@ -140,6 +140,7 @@ func _ready():
 	python_runtime.python_executable=python_executable
 	add_child(python_runtime)
 	python_runtime.finished.connect(python_finished)
+	python_runtime.progress.connect(func(message):terminal_visual.line(message))
 	ui.update_layout()
 
 	load_sector(starting_sector)
@@ -448,6 +449,9 @@ func run_command(text):
 			begin_hack("gate:"+str(i))
 			terminal_visual.line("[AUTH] Gate code recognized. Solve the displayed one-protocol puzzle to authorize it.")
 			return
+	if python_runtime.busy:
+		terminal_visual.line("[PYTHON] A command is still loading or running. Please wait for its result.")
+		return
 	pending_python_epoch=challenge_epoch
 	pending_python_target=hack_target
 	pending_python_a=hack_a
@@ -525,7 +529,7 @@ func _unhandled_input(event):
 		get_viewport().set_input_as_handled()
 
 func _physics_process(dt):
-	if ui.portrait_mode:
+	if ui.portrait_mode or (python_runtime.busy and python_runtime.web_loading):
 		player.halt()
 		return
 	if is_instance_valid(terminal_visual):terminal_visual.visible=console.visible and not modal.visible

@@ -1,3 +1,12 @@
+# Browser Python update
+The hosted browser terminal now runs actual Python in a lazy-loaded Pyodide module worker.
+Use print(a ^ b) for an XOR puzzle, or the expression shown by the current protocol.
+Imports such as math and session variables work. Invalid names produce normal Python errors.
+The first runtime download waits with combat and the timer paused; code execution is limited to five seconds.
+A timeout resets session variables. input() is unavailable.
+The worker executes on the player's device; GitHub Pages does not execute submitted code.
+Browser builds are produced by tools/build_pages.py, which copies the worker and evaluator beside the game.
+
 # MEMORY//BREACH
 Open project.godot in Godot 4.3 or newer and press F5.
 
