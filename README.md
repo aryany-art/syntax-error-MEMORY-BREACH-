@@ -22,3 +22,13 @@ the Windows download when the player has Python 3 installed.
 
 The build preserves the original WAV music in the source and converts it to Ogg
 in a temporary build copy. Mobile multi-touch and navigation optimizations are included.
+
+## Screen and touch controls
+The game expands its 16:9 base viewport to fit different screen shapes without
+stretching sprites. Click **Play fullscreen** on the browser start screen, or use
+the Fullscreen button during play. Native Windows builds support F11.
+
+On phones, use the left analog joystick to move. FIRE is at the bottom right,
+SHIELD is beside it, and HACK is above. Separate fingers can move, fire and shield
+at once. Controls account for display cutouts; the hacking input moves above the
+on-screen keyboard. Rotate to landscape; the sector timer waits in portrait.

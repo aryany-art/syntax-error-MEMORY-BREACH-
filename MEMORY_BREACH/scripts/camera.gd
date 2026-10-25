@@ -71,7 +71,11 @@ func add_shake(amount):
 func _process(delta):
 	if Engine.is_editor_hint(): return
 	if not is_instance_valid(target): target = get_node_or_null(target_path)
-	zoom = Vector2.ONE * lerpf(zoom.x,zoom_target,1.0-exp(-zoom_smoothing*delta))
+	var framed_zoom=zoom_target
+	if use_world_limits and camera_mode!=2:
+		var viewport_size=get_viewport_rect().size
+		framed_zoom=maxf(framed_zoom,maxf(viewport_size.x/world_bounds.size.x,viewport_size.y/world_bounds.size.y))
+	zoom = Vector2.ONE * lerpf(zoom.x,framed_zoom,1.0-exp(-zoom_smoothing*delta))
 	if camera_mode == 0 and is_instance_valid(target):
 		look_offset = look_offset.lerp(screen_aim*look_ahead,1.0-exp(-look_smoothing*delta))
 		global_position = target.global_position+look_offset

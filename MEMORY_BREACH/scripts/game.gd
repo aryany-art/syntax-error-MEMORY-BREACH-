@@ -131,6 +131,7 @@ func _ready():
 	sound_players["kavya_victory"].finished.connect(restore_music_volume)
 	build_ui()
 	terminal_visual=PanelContainer.new()
+	terminal_visual.name="TerminalVisual"
 	terminal_visual.set_script(preload("res://scripts/hack_visual.gd"))
 	ui.add_child(terminal_visual)
 	terminal_visual.hide()
@@ -139,6 +140,7 @@ func _ready():
 	python_runtime.python_executable=python_executable
 	add_child(python_runtime)
 	python_runtime.finished.connect(python_finished)
+	ui.update_layout()
 
 	load_sector(starting_sector)
 
@@ -516,17 +518,16 @@ func _unhandled_input(event):
 				playing = false
 				player.halt()
 				show_modal("CONNECTION PAUSED", "Take a breath. Your sector is preserved.", "RESUME", "start")
-	if event is InputEventScreenTouch:
-		if event.pressed and event.position.x < 400 and event.position.y > 400 and stick_id == -1:
-			stick_id = event.index
-			stick_origin = event.position
-		elif not event.pressed and event.index == stick_id:
-			stick_id = -1
-			stick_vector = Vector2.ZERO
-	if event is InputEventScreenDrag and event.index == stick_id:
-		stick_vector = (event.position - stick_origin).limit_length(65.0) / 65.0
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode==KEY_F11:
+		if OS.has_feature("web"):
+			JavaScriptBridge.eval("window.memoryBreachFullscreen && window.memoryBreachFullscreen()")
+		else:ui._on_fullscreen_pressed()
+		get_viewport().set_input_as_handled()
 
 func _physics_process(dt):
+	if ui.portrait_mode:
+		player.halt()
+		return
 	if is_instance_valid(terminal_visual):terminal_visual.visible=console.visible and not modal.visible
 
 	camera.screen_aim = aim
@@ -572,7 +573,7 @@ func _physics_process(dt):
 	if energy <= 4: shield_toggle = false
 	player.present(aim, shielding, console.visible)
 	player.drive(direction, dt, solids())
-	if not console.visible and (Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or down(KEY_SPACE) or touch_held.get("fire", false)):
+	if not console.visible and ((not touch_mode and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)) or down(KEY_SPACE) or touch_held.get("fire", false)):
 		shoot()
 	for clue in clues:
 		if not clue.found and pos.distance_to(clue.pos) < 52:
@@ -835,6 +836,7 @@ func build_ui():
 	command_input.gui_input.connect(console_key)
 	touch_mode = ui.get_node("TouchControls").visible
 	ui.touch_controls_enabled.connect(func():touch_mode=true)
+	ui.joystick_changed.connect(func(value):stick_vector=value)
 
 func console_key(event):
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE:
@@ -904,9 +906,6 @@ func _draw():
 	for p in particles:
 		draw_circle(p.pos,2,Color(p.color,clampf(p.life*3,0,1)))
 	draw_set_transform(Vector2.ZERO)
-	if touch_mode and stick_id >= 0:
-		draw_circle(stick_origin,65,Color(0.2,0.8,1,0.12))
-		draw_circle(stick_origin+stick_vector*65,23,Color(0.2,0.8,1,0.45))
 
 func draw_ellipse_shadow(p):
 	draw_circle(p+Vector2(0,15),19,Color(0,0,0,0.4))

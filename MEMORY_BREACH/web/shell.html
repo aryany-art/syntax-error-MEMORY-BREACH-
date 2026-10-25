@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07101c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>$GODOT_PROJECT_NAME</title>
+$GODOT_HEAD_INCLUDE
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07101c;color:#e9fbff;font-family:system-ui,-apple-system,sans-serif;overscroll-behavior:none}
+#canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+#safe-area{position:fixed;pointer-events:none;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#cover{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));background:radial-gradient(ellipse at 25% 25%,#123e4b 0,transparent 55%),#07101c}
+#cover[hidden]{display:none}.card{max-width:650px;text-align:center}.eyebrow{font-size:12px;letter-spacing:.3em;color:#73c8d2}
+h1{font-size:clamp(28px,6vw,60px);letter-spacing:-.045em;margin:14px 0;color:#7ef9e4;white-space:nowrap}p{color:#b5c9d8;line-height:1.6;margin:12px 0 22px}
+button,a{font:inherit}button{cursor:pointer;border:1px solid #71e9da;border-radius:12px;padding:15px 24px;font-weight:700;background:#79f0d7;color:#052026}
+button:disabled{opacity:.5;cursor:wait}#windowed{background:transparent;color:#c6e9ed;margin-left:8px;border-color:#3b727e}
+#progress{display:block;accent-color:#7ef9e4;width:100%;height:8px;margin-top:24px}#progress[hidden]{display:none}
+#status{min-height:22px;color:#a9c9d4;font-size:14px;margin-top:14px}#fullscreen{position:fixed;z-index:20;right:max(12px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));padding:10px 14px;background:#09232ddd;color:#a2fff4;font-size:12px;border-radius:8px;touch-action:manipulation}
+#fullscreen[hidden]{display:none}.back{display:inline-block;color:#a6c9d7;margin-top:14px;font-size:13px}.legend{font-size:13px;color:#81a5b8}
+@media(max-height:460px){#cover{padding-top:12px;padding-bottom:12px}h1{margin:8px 0}p{margin:8px 0 14px}.eyebrow{font-size:10px}.back{margin-top:10px}#status{margin-top:8px}}
+</style>
+</head>
+<body>
+<div id="safe-area"></div>
+<canvas id="canvas" tabindex="0" aria-label="MEMORY BREACH game"></canvas>
+<button id="fullscreen" type="button" hidden>Fullscreen</button>
+<section id="cover" aria-label="Start MEMORY BREACH">
+<div class="card">
+<div class="eyebrow">THE HUMAN EXCEPTION</div>
+<h1>MEMORY//BREACH</h1>
+<p>Recover the memories. Breach the network. Face KAVYA.</p>
+<div><button id="start" type="button">Play fullscreen</button><button id="windowed" type="button">Play in window</button></div>
+<progress id="progress" hidden></progress><div id="status" role="status" aria-live="polite">Landscape recommended on phones.</div>
+<div class="legend">Touch: left joystick + FIRE / HACK / SHIELD<br>Keyboard: WASD · Mouse: aim and fire · F11: fullscreen</div>
+<a class="back" href="../">Back / Windows download</a>
+</div></section>
+<script src="$GODOT_URL"></script>
+<script>
+'use strict';
+const canvas=document.getElementById('canvas');
+const cover=document.getElementById('cover');
+const status=document.getElementById('status');
+const progress=document.getElementById('progress');
+const fullscreen=document.getElementById('fullscreen');
+let starting=false;
+window.memoryBreachInsets=function(logicalWidth){
+ const p=getComputedStyle(document.getElementById('safe-area'));
+ const scale=logicalWidth/Math.max(1,canvas.clientWidth);
+ return [p.paddingLeft,p.paddingTop,p.paddingRight,p.paddingBottom].map(v=>(parseFloat(v)||0)*scale).join(',');
+};
+window.memoryBreachKeyboard=function(logicalHeight){
+ if(!window.visualViewport)return 0;
+ const hidden=Math.max(0,innerHeight-visualViewport.height-visualViewport.offsetTop);
+ return hidden>80 ? hidden*logicalHeight/Math.max(1,canvas.clientHeight) : 0;
+};
+window.memoryBreachFullscreen=async function(){
+ try{
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+   const exit=document.exitFullscreen||document.webkitExitFullscreen;
+   if(exit)await exit.call(document);
+  }else{
+   const enter=document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen;
+   if(!enter)return false;
+   await enter.call(document.documentElement);
+   if(screen.orientation&&screen.orientation.lock){
+    try{await screen.orientation.lock('landscape');}catch(e){}
+   }
+  }
+  return true;
+ }catch(e){return false;}
+};
+fullscreen.addEventListener('click',()=>window.memoryBreachFullscreen());
+document.addEventListener('fullscreenchange',()=>{
+ fullscreen.textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen';
+ canvas.focus();
+});
+async function start(wantFullscreen){
+ if(starting)return;
+ if(!Engine.isWebGLAvailable(2)){
+  status.textContent='WebGL2 graphics are unavailable in this browser. Use a supported browser or the Windows download below.';
+  return;
+ }
+ starting=true;
+ document.getElementById('start').disabled=true;
+ document.getElementById('windowed').disabled=true;
+ if(wantFullscreen)window.memoryBreachFullscreen();
+ status.textContent='Loading the archive…';
+ progress.hidden=false;
+ const engine=new Engine($GODOT_CONFIG);
+ try{
+  await engine.startGame({
+   canvas:canvas,canvasResizePolicy:2,
+   onProgress:function(current,total){
+    if(total>0){progress.max=total;progress.value=current;status.textContent='Loading '+Math.round(current/total*100)+'%';}
+   }
+  });
+  cover.hidden=true;
+  fullscreen.hidden=false;
+  canvas.focus();
+ }catch(error){
+  status.textContent='Could not start the game. Check your connection and refresh, or use the Windows download.';
+  console.error(error);
+ }
+}
+document.getElementById('start').addEventListener('click',()=>start(true));
+document.getElementById('windowed').addEventListener('click',()=>start(false));
+document.addEventListener('contextmenu',event=>event.preventDefault());
+</script>
+</body>
+</html>

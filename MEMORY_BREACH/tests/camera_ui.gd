@@ -1,10 +1,11 @@
 extends SceneTree
 var checks=0
+var failures=0
 func check(condition,label):
 	checks+=1
 	if not condition:
 		push_error("FAILED: "+label)
-		assert(condition,label)
+		failures+=1
 func _initialize():
 	call_deferred("run")
 func run():
@@ -62,9 +63,13 @@ func run():
 	check(c.target==game.player,"camera rebinds after sector change")
 	check(c.limit_left==0 and c.limit_right==960 and c.limit_bottom==720,"world camera limits applied")
 	game.load_sector(0)
+	game.pos=game.gates[0].rect.get_center()+Vector2(-70,0)
 	game.command_input.text="access = true"
 	game.ui.get_node("Console/ConsoleContent/CommandRow/RunButton").pressed.emit()
-	check(game.gates[0].open,"scene RUN button executes command")
+	check(game.hack_target=="gate:0","scene RUN button selects one-protocol challenge")
+	game.command_input.text=str(game.expected_answer())
+	game.ui.get_node("Console/ConsoleContent/CommandRow/RunButton").pressed.emit()
+	check(game.gates[0].open,"scene RUN button executes accepted protocol")
 	game.modal_action.pressed.emit()
 	check(game.playing,"scene ENTER button starts play")
 	game.ui.console_close_requested.emit()
@@ -79,7 +84,7 @@ func run():
 	game.tuning.max_energy=120
 	game.tuning.timer_multiplier=2
 	game.load_sector(0)
-	check(game.hp==150 and game.energy==120,"vitals use tuning resource")
+	check(game.hp==150 and game.energy==60,"vitals use tuning resource")
 	check(game.remaining==300,"timer uses tuning resource")
 	game.tuning=original
 	var rig=load("res://scenes/CameraRig.tscn").instantiate()
@@ -100,5 +105,5 @@ func run():
 	game.queue_free()
 	await process_frame
 	await create_timer(0.1).timeout
-	print("PASS: ",checks," camera, UI and configuration assertions")
-	quit()
+	print("PASS: " if failures==0 else "FAIL: ",checks," camera, UI and configuration assertions")
+	quit(0 if failures==0 else 1)

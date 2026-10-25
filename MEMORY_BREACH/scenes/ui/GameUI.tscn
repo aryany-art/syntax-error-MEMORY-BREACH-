@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/death_effect.gd" id="death_script"]
 [ext_resource type="Shader" path="res://assets/death_vignette.gdshader" id="death_shader"]
 [ext_resource type="Script" path="res://scripts/ui.gd" id="ui_script"]
+[ext_resource type="Script" path="res://scripts/touch_joystick.gd" id="joystick_script"]
 
 [sub_resource type="ShaderMaterial" id="DeathMaterial"]
 shader = ExtResource("death_shader")
@@ -72,45 +73,23 @@ layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 
-[node name="Up" type="Button" parent="TouchControls"]
-layout_mode = 0
-offset_left = 85.0
-offset_top = 520.0
-offset_right = 153.0
-offset_bottom = 582.0
-focus_mode = 0
-text = "UP"
-metadata/action = "up"
+[node name="Joystick" type="Control" parent="TouchControls"]
+offset_left = 30.0
+offset_top = 480.0
+offset_right = 226.0
+offset_bottom = 676.0
+mouse_filter = 2
+script = ExtResource("joystick_script")
 
-[node name="Left" type="Button" parent="TouchControls"]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 590.0
-offset_right = 83.0
-offset_bottom = 652.0
-focus_mode = 0
-text = "LEFT"
-metadata/action = "left"
-
-[node name="Down" type="Button" parent="TouchControls"]
-layout_mode = 0
-offset_left = 85.0
-offset_top = 590.0
-offset_right = 153.0
-offset_bottom = 652.0
-focus_mode = 0
-text = "DOWN"
-metadata/action = "down"
-
-[node name="Right" type="Button" parent="TouchControls"]
-layout_mode = 0
-offset_left = 155.0
-offset_top = 590.0
-offset_right = 223.0
-offset_bottom = 652.0
-focus_mode = 0
-text = "RIGHT"
-metadata/action = "right"
+[node name="MoveLabel" type="Label" parent="TouchControls/Joystick"]
+offset_top = 196.0
+offset_right = 196.0
+offset_bottom = 218.0
+mouse_filter = 2
+text = "MOVE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.5,0.9,1,0.8)
 
 [node name="Fire" type="Button" parent="TouchControls"]
 layout_mode = 0
@@ -224,7 +203,18 @@ theme_override_colors/font_color = Color(0.788235, 0.968627, 0.419608, 1)
 theme_override_font_sizes/font_size = 20
 text = "AETHER // COMMAND CONSOLE"
 
-[node name="ConsoleLog" type="Label" parent="Console/ConsoleContent"]
+[node name="ConsoleScroll" type="ScrollContainer" parent="Console/ConsoleContent"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,100)
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="ConsoleDetails" type="VBoxContainer" parent="Console/ConsoleContent/ConsoleScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConsoleLog" type="Label" parent="Console/ConsoleContent/ConsoleScroll/ConsoleDetails"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.360784, 0.882353, 0.901961, 1)
@@ -232,7 +222,7 @@ theme_override_font_sizes/font_size = 13
 text = "Read amber terminals to discover executable commands."
 autowrap_mode = 3
 
-[node name="CommandChips" type="HFlowContainer" parent="Console/ConsoleContent"]
+[node name="CommandChips" type="HFlowContainer" parent="Console/ConsoleContent/ConsoleScroll/ConsoleDetails"]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -312,3 +302,38 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "CONTINUE SAVED CAMPAIGN"
+
+
+[node name="Fullscreen" type="Button" parent="."]
+offset_left = 1116.0
+offset_top = 16.0
+offset_right = 1260.0
+offset_bottom = 62.0
+text = "FULLSCREEN"
+focus_mode = 0
+
+[node name="OrientationNotice" type="Control" parent="."]
+visible = false
+mouse_filter = 0
+
+[node name="Shade" type="ColorRect" parent="OrientationNotice"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.015,0.03,0.055,0.98)
+
+[node name="Center" type="CenterContainer" parent="OrientationNotice"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Message" type="Label" parent="OrientationNotice/Center"]
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.5,0.95,1,1)
+text = "ROTATE YOUR PHONE
+Play in landscape for joystick and action controls.
+Your game waits while you rotate."
+horizontal_alignment = 1
+mouse_filter = 2

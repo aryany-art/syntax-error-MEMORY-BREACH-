@@ -34,6 +34,8 @@ variant/thread_support=false
 vram_texture_compression/for_desktop=true
 vram_texture_compression/for_mobile=true
 html/export_icon=true
+html/custom_html_shell="res://web/shell.html"
+html/canvas_resize_policy=2
 html/experimental_virtual_keyboard=true
 progressive_web_app/enabled=false
 
